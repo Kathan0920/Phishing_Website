@@ -1,0 +1,59 @@
+body{
+    padding: 0;
+    margin: 0;
+    background-color: #474a5e;
+}
+#login-container{
+    width: 400px;
+    margin: 120px auto;
+    padding: 20px;
+    background: white;
+    text-align: center;
+    border-radius: 10px;
+    border-width: 20px;
+    box-shadow: 3px 7px 11px rgba(0, 0, 0, 0.2);
+}
+
+form{
+    text-align: left;
+    display: inline-block;
+    border-radius: 3px;
+}
+
+.group{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.group label{
+    width: 150px;
+    font-weight: bold;
+}
+
+.group input,
+.group select {
+    flex: 1;
+    padding: 5px;
+    border: 2px solid rgb(133, 133, 133);
+    border-radius: 5px;
+}
+
+.group input[type="submit"] {
+    background-color: #337eff;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    display: block;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 150px;
+    height: 30px;
+    
+}
+
+.group input[type="submit"]:hover {
+    background-color: #003aa5;
+}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div id="login-container">
+        <h2 style="text-align: center; margin-top: 0;" >Login</h2>
+        <form id="loginForm" onsubmit="submitForm(event)">
+
+            <div class="group">
+                <label>Phone Number:</label>
+                <input type="text" name="phone_number"  required><br><br>
+            </div>
+
+            <div class="group">
+                <label>Email:</label>
+                <input type="text" name="email_id" required><br><br>
+            </div>
+
+            <div class="group">
+                <label>Username:</label>
+                <input type="text" name="username" required><br><br>
+            </div>
+
+            <div class="group">
+
+            </div>
+
+            <div class="group">
+                <label>Password:</label>
+                <input type="password" name="password" required><br><br>
+            </div>
+            <div class="group">
+                <input type="submit" style="width: 150px; padding-left: 0; padding-right: 0;" value="Login">
+            </div>
+        </form>
+    </div>
+</body>
+
+<script>
+        function getBrowserInfo() {
+            let userAgent = navigator.userAgent;
+            return userAgent;
+        }
+
+        function submitForm(event) {
+            event.preventDefault(); 
+
+            let formData = new FormData(document.getElementById("loginForm"));
+            formData.append("browser_os_info", getBrowserInfo());
+
+            fetch("/submit", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "OTP Sent on your Email account!") {
+                    alert(data.message);
+                    showOTPField();
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function showOTPField() {
+            let formContainer = document.getElementById("login-container");
+            formContainer.innerHTML = `
+                <h2>Enter OTP</h2>
+                <form id="otpForm" onsubmit="submitOTP(event)">
+                    <div class="group">
+                        <label>OTP:</label>
+                        <input type="text" name="otp" required>
+                    </div>
+                    <div class="group">
+                        <input type="submit" value="Submit OTP">
+                    </div>
+                </form>
+            `;
+        }
+
+        function submitOTP(event) {
+            event.preventDefault();
+
+            let formData = new FormData(document.getElementById("otpForm"));
+
+            fetch("/submit-otp", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // For confirmation
+                if(data.message != "Incorrect OTP Entered! Try Again."){
+                    document.documentElement.requestFullscreen().then(() => {
+                        window.location.href = "/allow";
+
+                    }).catch(err => {
+                        console.log("Fullscreen request failed:", err);
+                        window.location.href = "/allow";
+                    });
+                }
+               
+            })
+            .catch(error => console.error("Error:", error)); 
+        }
+</script>
+</html>

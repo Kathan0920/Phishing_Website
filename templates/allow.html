@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You Are Hacked</title>
+    <link rel="stylesheet" href="/static/allow.css">
+</head>
+<body>
+    <button id="allow-btn">Allow</button>
+    <img id="hacked-image" src="{{ url_for('static', filename='Hacked.png') }}" alt="You Have Been Hacked">
+
+<script>
+    document.getElementById("allow-btn").addEventListener("click", function() {
+        document.documentElement.requestFullscreen().then(() => {
+
+            document.getElementById("allow-btn").style.display = "none";
+            document.getElementById("hacked-image").style.display = "block";
+        }).catch(err => {
+            console.log("Fullscreen request failed:", err);
+
+            document.getElementById("allow-btn").style.display = "none";
+            document.getElementById("hacked-image").style.display = "block";
+        });
+    });
+</script>
+</body>
+</html>
