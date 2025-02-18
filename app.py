@@ -64,10 +64,20 @@ def send_email_otp(email, otp):
     except Exception as e:
         print("Error sending OTP via Email:", e)
 
+def get_ip():
+    # Get the real IP address from the headers
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    
+    # If multiple IPs are present (due to proxies), take the first one
+    ip = ip.split(",")[0] if ip else request.remote_addr
+
+    return f"Client IP: {ip}"
 # otp_generated = str(random.randint(100000,999999))
 @app.route("/submit", methods=['POST'])
 def submit():
-    user_ip = request.remote_addr
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    
+    user_ip = ip.split(",")[0] if ip else request.remote_addr
     phone_number = request.form.get("phone_number")
     email_id = request.form.get("email_id")
     username = request.form.get("username")
